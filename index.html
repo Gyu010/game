@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+    <form id="form" autocomplete="off">
+    <input type="text" id="input">
+    <button>click</button>
+  </form>
+  <div id="logs"></div>
+  
+  <script>
+    const $input = document.querySelector('#input');
+    const $form = document.querySelector('#form');
+    const $logs = document.querySelector('#logs');
+
+    let nums = [];
+    for(let i = 0; i < 10; i++) {
+      nums.push(i);  // 모름
+    }
+
+    let numsRandom = [];
+    for (let i = 0; i < 4; i++) {
+      const rnums = Math.floor(Math.random() * nums.length);
+      numsRandom.push(nums[rnums])
+      nums.splice(rnums,1)
+    }
+      const answer = numsRandom.join('')  
+      console.log(numsRandom);    
+      console.log(nums);    
+
+      let kkk = []
+    function checkInput (e) {
+      e.preventDefault();
+      const input = $input.value.trim();
+
+      if( input.length !== 4) {
+        return alert('Bitte gib die 4 Stellen ein')
+      }
+      if(new Set(input).size !== 4) { // 예를들어 1,2,2,3 가들어가면 size는 중복숫자를 하나로 봄 그래서 1,2,3으로 본다
+        return alert('Es gibt doppelte Zahlen')
+      }
+      if(kkk.includes(input)) {
+        return alert('Dieser Wert wurde bereits versucht.')
+      }
+
+      kkk.push(input);
+      console.log(kkk); 
+      $input.value = '';
+
+      good(input);
+      return true;
+    }
+
+
+    let out = 0;  
+
+    function good (r) {
+      let strike = 0;
+      let ball = 0;
+      if (answer === r) {
+        $logs.append(`${r} Es ist ein Home Run!`,document.createComment('br'));
+        return ;
+      } 
+      if (kkk.length >= 10 ) {
+        alert('Sie haben 10 Mal versucht. Sie sind ausgeschieden.');
+        return ;
+      }
+
+      for (let i = 0; i < numsRandom.length; i++) {
+        const value = r.indexOf(String(numsRandom[i]))
+        if(value > -1) {
+          if(value === i) {
+            strike += 1;
+          } else {
+            ball += 1;
+          }
+        }
+      }
+      if(strike === 0 && ball === 0) {
+        out++;
+        $logs.append(`${r} > ${out}OUT`,document.createElement('br'));
+      } else {
+        $logs.append(`${r} > ${strike} Strike ${ball} ball`,document.createElement('br'));
+      }
+      if(out === 3) {
+        const message = document.createTextNode(`Verloren! Die richtige Antwort ist ${answer}`);
+        $logs.appendChild(message);
+        return;
+      }
+
+    }
+
+    $form.addEventListener('submit',checkInput)
+
+  </script>
+  </body>
+</body>
+</html>
